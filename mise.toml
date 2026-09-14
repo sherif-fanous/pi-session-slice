@@ -1,0 +1,62 @@
+[env]
+_.file = ".env"
+_.path = ["{{config_root}}/node_modules/.bin"]
+
+[tasks.check]
+depends = ["format-check", "type-check", "lint", "test"]
+
+[tasks.format]
+run = "prettier --write eslint.config.mjs package.json src/. tests/. tsconfig.json vitest.config.ts"
+
+[tasks.format-check]
+run = "prettier --check eslint.config.mjs package.json src/. tests/. tsconfig.json vitest.config.ts"
+
+[tasks.install-deps]
+run = "pnpm add --save-prod"
+
+[tasks.install-dev-deps]
+run = "pnpm add --save-dev"
+
+[tasks.lint]
+run = "biome lint src/. tests/. && eslint src/. tests/."
+
+[tasks.lint-fix]
+run = "biome lint src/. tests/. --fix && eslint src/. tests/. --fix"
+
+[tasks.login]
+run = "pnpm login"
+
+[tasks.pack-check]
+depends = ["check"]
+run = "pnpm pack --dry-run"
+
+[tasks.publish]
+depends = ["pack-check"]
+# pnpm 12 stopped expanding `${NPM_ACCESS_TOKEN}` from .npmrc, so the token
+# goes straight to pnpm as npm-style config instead.
+run = '''
+: "${NPM_ACCESS_TOKEN:?Set NPM_ACCESS_TOKEN in .env to an npm token with publish rights for @sherif-fanous/pi-session-slice}"
+exec env "npm_config_//registry.npmjs.org/:_authToken=$NPM_ACCESS_TOKEN" pnpm publish --access public
+'''
+
+[tasks.sort-package-json]
+run = "sort-package-json"
+
+[tasks.test]
+run = "vitest --run"
+
+[tasks.test-watch]
+run = "vitest"
+
+[tasks.type-check]
+run = "tsc --noEmit"
+
+[tasks.uninstall-deps]
+run = "pnpm remove"
+
+[tasks.update-deps]
+run = "pnpm update"
+
+[tools]
+node = "lts"
+"npm:pnpm" = "latest"

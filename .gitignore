@@ -1,0 +1,9 @@
+.DS_Store
+.agents/
+.env
+.pi/
+node_modules/
+openspec/changes/*
+pi-session-slice.code-workspace
+skills-lock.json
+!openspec/changes/archive/
